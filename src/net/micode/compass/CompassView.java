@@ -18,48 +18,60 @@ package net.micode.compass;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 public class CompassView extends ImageView {
-    private float mDirection;
-    private Drawable compass;
+	private float mDirection;
+	private Drawable compass;
 
-    public CompassView(Context context) {
-        super(context);
-        mDirection = 0.0f;
-        compass = null;
-    }
+	// private Paint paint;
 
-    public CompassView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mDirection = 0.0f;
-        compass = null;
-    }
+	public CompassView(Context context) {
+		super(context);
+		mDirection = 0.0f;
+		compass = null;
+	}
 
-    public CompassView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        mDirection = 0.0f;
-        compass = null;
-    }
+	public CompassView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		mDirection = 0.0f;
+		compass = null;
+	}
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        if (compass == null) {
-            compass = getDrawable();
-            compass.setBounds(0, 0, getWidth(), getHeight());
-        }
+	public CompassView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		mDirection = 0.0f;
+		compass = null;
+	}
 
-        canvas.save();
-        canvas.rotate(mDirection, getWidth() / 2, getHeight() / 2);
-        compass.draw(canvas);
-        canvas.restore();
-    }
+	@Override
+	protected void onDraw(Canvas canvas) {
+		if (compass == null) {
+			// getDrawable() return mDrawable,即mChinese ? R.drawable.compass_cn
+			// : R.drawable.compass
+			compass = getDrawable();
+			compass.setBounds(0, 0, getWidth(), getHeight());
+		}
 
-    public void updateDirection(float direction) {
-        mDirection = direction;
-        invalidate();
-    }
+		// 先保存画布原来的位置
+		canvas.save();
+		// 旋转画布
+		canvas.rotate(mDirection, getWidth() / 2, getHeight() / 2);
+		// 在画布上画下compass
+		compass.draw(canvas);
+		// 画布返回刚才保存的位置
+		canvas.restore();
+	}
+
+	public void updateDirection(float direction) {
+		mDirection = direction;
+		// 请求重绘View树，即onDraw()，假如视图大小没有变化就不会调用layout()过程，并且只绘制那些“需要重绘的”
+		// 视图，即谁(View的话，只绘制该View；ViewGroup，则绘制整个ViewGroup)请求invalidate()方法，就绘制该视图。
+		//
+		invalidate();
+	}
 
 }
